@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import EcoBackground from '@/components/ui/EcoBackground'
 import Podium from '@/components/live/Podium'
 import LiveLeaderboard from '@/components/live/LiveLeaderboard'
 import Button from '@/components/ui/Button'
@@ -24,59 +25,111 @@ export default function QuizResultsPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
+        <EcoBackground />
         <LoadingSpinner size="lg" />
       </div>
     )
   }
 
   return (
-    <section className="relative overflow-hidden py-12 sm:py-20">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/30 via-slate-950 to-slate-950" />
+    <section className="relative overflow-hidden min-h-screen py-12 sm:py-20">
+      <EcoBackground />
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative mx-auto max-w-3xl px-4"
+        transition={{ duration: 0.6 }}
+        className="relative mx-auto max-w-5xl px-4"
       >
-        <p className="mb-2 text-center text-sm text-slate-500">
-          {session?.quizzes?.title ?? 'Quiz'}
-        </p>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <div className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full mb-4">
+            <span className="text-2xl">🌍</span>
+            <span className="text-emerald-300 font-semibold">
+              {session?.quizzes?.title ?? 'Pollution Awareness Quiz'}
+            </span>
+          </div>
+        </motion.div>
 
         {error ? (
-          <p className="text-center text-red-400">{error}</p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass-strong rounded-3xl p-8 text-center"
+          >
+            <span className="text-6xl mb-4 block">⚠️</span>
+            <p className="text-red-400 text-lg">{error}</p>
+          </motion.div>
         ) : (
           <>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-2xl">
+            {/* Podium */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="glass-strong rounded-3xl p-8 sm:p-12 shadow-2xl mb-8"
+            >
               <Podium entries={leaderboard} />
-            </div>
+            </motion.div>
 
+            {/* Full Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="glass-strong rounded-3xl p-8"
+              >
                 <LiveLeaderboard
                   entries={leaderboard}
                   highlightId={stored?.participantId}
-                  title="Full standings"
+                  title="📊 Full Standings"
                 />
-              </div>
+              </motion.div>
             )}
           </>
         )}
 
-        <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
           <Link to={ROUTES.JOIN}>
-            <Button>Join another quiz</Button>
+            <Button className="eco-gradient text-white font-semibold px-8 py-4 rounded-2xl shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 hover:scale-105">
+              🔄 Join Another Quiz
+            </Button>
           </Link>
           <Button
             variant="secondary"
+            className="glass-strong px-8 py-4 rounded-2xl hover:bg-white/20 transition-all duration-300"
             onClick={() => {
               clearParticipantSession()
               navigate(ROUTES.HOME)
             }}
           >
-            Home
+            🏠 Back to Home
           </Button>
-        </div>
+        </motion.div>
+
+        {/* Share Message */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-12 text-center glass-strong rounded-2xl p-6"
+        >
+          <p className="text-slate-300 text-lg">
+            🌟 Share your score and spread pollution awareness!
+          </p>
+        </motion.div>
       </motion.div>
     </section>
   )

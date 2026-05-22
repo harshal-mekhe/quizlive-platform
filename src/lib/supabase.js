@@ -19,5 +19,16 @@ export const supabase = isSupabaseConfigured
         detectSessionInUrl: true,
         storage: window.localStorage,
       },
+      db: {
+        schema: 'public',
+      },
+      global: {
+        headers: { 'x-client-info': 'quizlive-web' },
+      },
+      realtime: {
+        params: {
+          eventsPerSecond: 10,
+        },
+      },
     })
   : null

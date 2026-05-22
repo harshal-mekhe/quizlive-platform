@@ -57,6 +57,7 @@ Run in Supabase **SQL Editor**, in order:
 1. [`supabase/schema.sql`](./supabase/schema.sql) — base tables + RLS
 2. [`supabase/migrations/phase2_participants.sql`](./supabase/migrations/phase2_participants.sql) — join policies + Realtime  
 3. [`supabase/migrations/phase3_live_quiz.sql`](./supabase/migrations/phase3_live_quiz.sql) — live quiz state, scoring RPC, leaderboard
+4. [`supabase/migrations/performance_indexes.sql`](./supabase/migrations/performance_indexes.sql) — **recommended** for faster queries
 
 ### 3. Auth
 

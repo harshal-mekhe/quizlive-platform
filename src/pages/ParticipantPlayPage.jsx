@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import EcoBackground from '@/components/ui/EcoBackground'
 import QuestionCard from '@/components/live/QuestionCard'
 import LiveLeaderboard from '@/components/live/LiveLeaderboard'
 import PhaseBanner from '@/components/live/PhaseBanner'
@@ -91,9 +92,9 @@ export default function ParticipantPlayPage() {
         setPointsEarned(result?.points_earned ?? 0)
 
         if (result?.is_correct) {
-          toast.success(`Correct! +${result.points_earned} points`)
+          toast.success(`🎉 Correct! +${result.points_earned} points`)
         } else {
-          toast.info('Answer recorded')
+          toast.info('📝 Answer recorded')
         }
       } catch (err) {
         setSelectedAnswer(null)
@@ -107,7 +108,8 @@ export default function ParticipantPlayPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
+        <EcoBackground />
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -115,11 +117,18 @@ export default function ParticipantPlayPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-md px-4 py-20 text-center">
-        <p className="text-red-400">{error}</p>
-        <Link to={ROUTES.JOIN} className="mt-4 inline-block text-brand-400">
-          Back to join
-        </Link>
+      <div className="min-h-screen flex items-center justify-center">
+        <EcoBackground />
+        <div className="glass-strong rounded-3xl p-8 max-w-md text-center">
+          <span className="text-6xl mb-4 block">⚠️</span>
+          <p className="text-red-400 mb-4">{error}</p>
+          <Link
+            to={ROUTES.JOIN}
+            className="inline-block eco-gradient text-white px-6 py-3 rounded-xl font-semibold"
+          >
+            Back to Join
+          </Link>
+        </div>
       </div>
     )
   }
@@ -133,27 +142,38 @@ export default function ParticipantPlayPage() {
     livePhase === LIVE_PHASE.REVEAL
 
   return (
-    <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden py-8 sm:py-12">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-900/25 via-slate-950 to-slate-950" />
+    <section className="relative min-h-screen overflow-hidden py-8 sm:py-12">
+      <EcoBackground />
 
-      <div className="relative mx-auto max-w-2xl px-4">
+      <div className="relative mx-auto max-w-4xl px-4">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="mb-6 text-center"
         >
-          <p className="text-sm text-slate-500">{session?.quizzes?.title}</p>
-          <p className="mt-1 text-slate-400">
-            Playing as{' '}
-            <span className="font-medium text-brand-300">{stored.nickname}</span>
-          </p>
+          <div className="glass-strong rounded-2xl px-6 py-4 inline-block">
+            <p className="text-sm text-emerald-300 font-semibold">
+              {session?.quizzes?.title || 'Pollution Awareness Quiz'}
+            </p>
+            <p className="mt-1 text-slate-300">
+              Playing as{' '}
+              <span className="font-bold text-gradient">{stored.nickname}</span>
+            </p>
+          </div>
         </motion.div>
 
+        {/* Phase Banner */}
         <div className="mb-6">
           <PhaseBanner livePhase={livePhase} />
         </div>
 
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl backdrop-blur-sm">
+        {/* Main Content */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass-strong rounded-3xl p-6 sm:p-8 shadow-2xl"
+        >
           {showQuestion && question && (
             <QuestionCard
               question={question}
@@ -168,7 +188,7 @@ export default function ParticipantPlayPage() {
           )}
 
           {showLeaderboard && (
-            <div className={showQuestion ? 'mt-8 border-t border-slate-800 pt-8' : ''}>
+            <div className={showQuestion ? 'mt-8 border-t border-white/10 pt-8' : ''}>
               <LiveLeaderboard
                 entries={leaderboard}
                 highlightId={stored.participantId}
@@ -179,7 +199,7 @@ export default function ParticipantPlayPage() {
           {livePhase === LIVE_PHASE.PODIUM && (
             <Podium entries={leaderboard} />
           )}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
-import { APP_NAME, ROUTES } from '@/utils/constants'
+import { ROUTES } from '@/utils/constants'
 import Button from '@/components/ui/Button'
 
 export default function Navbar() {
@@ -13,51 +14,79 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="sticky top-0 z-50 border-b border-white/10 glass-strong backdrop-blur-2xl"
+    >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
         <Link
           to={ROUTES.HOME}
-          className="bg-gradient-to-r from-brand-400 to-indigo-400 bg-clip-text text-xl font-bold text-transparent"
+          className="flex items-center gap-3 group"
         >
-          {APP_NAME}
+          <motion.span
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="text-3xl"
+          >
+            🌍
+          </motion.span>
+          <span className="text-2xl font-bold text-gradient group-hover:scale-105 transition-transform">
+            EcoQuiz
+          </span>
         </Link>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link
             to={ROUTES.JOIN}
-            className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+            className="text-sm font-semibold text-emerald-300 hover:text-emerald-200 transition-colors flex items-center gap-2"
           >
-            Join quiz
+            <span>🎮</span>
+            <span className="hidden sm:inline">Join Quiz</span>
           </Link>
           {isAuthenticated && isAdmin ? (
             <>
               <Link
                 to={ROUTES.DASHBOARD}
-                className="hidden text-sm text-slate-300 transition-colors hover:text-white sm:inline"
+                className="hidden sm:inline text-sm font-semibold text-cyan-300 hover:text-cyan-200 transition-colors"
               >
-                Dashboard
+                📊 Dashboard
               </Link>
-              <span className="hidden text-sm text-slate-500 sm:inline">
+              <span className="hidden sm:inline text-sm text-slate-400 glass px-3 py-1.5 rounded-full">
                 {profile?.display_name || profile?.email}
               </span>
-              <Button variant="secondary" size="sm" onClick={handleLogout}>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                onClick={handleLogout}
+                className="glass-strong hover:bg-white/20"
+              >
                 Log out
               </Button>
             </>
           ) : (
             <>
               <Link to={ROUTES.LOGIN}>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="glass hover:bg-white/10"
+                >
                   Log in
                 </Button>
               </Link>
               <Link to={ROUTES.SIGNUP}>
-                <Button size="sm">Sign up</Button>
+                <Button 
+                  size="sm"
+                  className="eco-gradient text-white font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50"
+                >
+                  Sign up
+                </Button>
               </Link>
             </>
           )}
         </div>
       </nav>
-    </header>
+    </motion.header>
   )
 }
